@@ -39,9 +39,39 @@
   * Instances of CharacterStats should have all of the same properties as GameObject.
 */
 
+function GameObject(attributes) {
+  this.createdAt = attributes.createdAt;
+  this.dimensions = attributes.dimensions;
+}
+GameObject.prototype.destroy = function() {
+  return `${this.name} was removed from the game.`
+}
+
+function CharacterStats(characterAttributes) {
+  GameObject.call(this, characterAttributes);
+  this.healthPoints = characterAttributes.healthPoints;
+  this.name = characterAttributes.name;
+}
+CharacterStats.prototype = Object.create(GameObject.prototype);
+// Must place child method after the Object.create
+CharacterStats.prototype.takeDamage = function() {
+  return `${this.name} took damage.`
+}
+
+function Humanoid(hAttributes) {
+  CharacterStats.call(this, hAttributes);
+  this.team = hAttributes.team;
+  this.weapons = hAttributes.weapons;
+  this.language = hAttributes.language;
+}
+Humanoid.prototype = Object.create(CharacterStats.prototype);
+Humanoid.prototype.greet = function() {
+  return `${this.name} offers a greeting in ${this.language}`
+}
+
 // Test you work by un-commenting these 3 objects and the list of console logs below:
 
-/*
+
   const mage = new Humanoid({
     createdAt: new Date(),
     dimensions: {
@@ -102,9 +132,93 @@
   console.log(archer.greet()); // Lilith offers a greeting in Elvish.
   console.log(mage.takeDamage()); // Bruce took damage.
   console.log(swordsman.destroy()); // Sir Mustachio was removed from the game.
-*/
+
 
   // Stretch task: 
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+  
+
+  function Hero(heroAttributes) {
+    Humanoid.call(this, heroAttributes);
+    this.isHero = heroAttributes.isHero;
+  }
+  Hero.prototype = Object.create(Humanoid.prototype);
+  Hero.prototype.removeHealthPoints = function() {
+    let newHealthpoint = this.healPoints--;
+    return newHealthpoint;
+  }
+  Hero.prototype.sayRole = function() {
+    if(this.isHero) {
+      return `I'm a hero`;
+    } else {
+      return `I'm not a hero`;
+    }
+  }
+
+  function Villain(villainAttributes) {
+    Humanoid.call(this, villainAttributes);
+    this.isVillain = villainAttributes.isVillain;
+  }
+  Villain.prototype = Object.create(Humanoid.prototype);
+  Villain.prototype.removeHealthPoints = function() {
+    this.healthPoints--;
+    return this.healthPoints;
+  }
+  Villain.prototype.sayRole = function() {
+    if(this.isVillain) {
+      console.log(`I'm a Villain`);
+    } else {
+      console.log(`I'm not a villain`);
+    }
+  }
+
+  /*
+  const archer = new Humanoid({
+    createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 2,
+      height: 4,
+    },
+    healthPoints: 10,
+    name: 'Lilith',
+    team: 'Forest Kingdom',
+    weapons: [
+      'Bow',
+      'Dagger',
+    ],
+    language: 'Elvish',
+  });  
+  */
+ const Dany = new Hero({
+   createdAt: new Date(),
+   dimensions: {
+     length: 1,
+     width: 2,
+     height: 3,
+   },
+   healthPoints: 15,
+   name: 'Daenerys',
+   team: 'Valyria',
+   weapons: [
+     'Dragons',
+     'Dragon Glass',
+     'Charisma',
+     'Fire magic',
+   ],
+   language: 'Old Valyria',
+ });
+ console.log(Dany.weapons);
+ console.log(Dany.healthPoints);
+ console.log(Dany.sayRole());
+ Dany.removeHealthPoints;
+ console.log(Dany.healthPoints);
+
+ const cersei = new Villain({
+   createdAt: new Date(),
+   name: 'Cersei',
+ })
+ console.log(cersei.sayRole());
